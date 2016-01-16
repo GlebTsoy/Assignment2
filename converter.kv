@@ -1,20 +1,16 @@
 BoxLayout:
     orientation: 'vertical'
     Label:
-        tex: 'Current trip location:'
+        text: 'Current trip location: ' + app.current_location(app.currentDate)
     Spinner:
-        id: spinner
         values: app.countries()
-        on_text: app.chosen_currency_code()
     TextInput:
-        multiline: False
+        input_filter: 'float'
     Label:
         id: home
         text: app.home_country()
     TextInput:
-        multiline: False
     Label:
-        text: 'Today is: ' + app.current_date()
-        font_size: 36
+        text: app.currentDate
     Label:
     Button:
