@@ -3,15 +3,20 @@ from kivy.lang import Builder
 from kivy.config import Config
 from datetime import datetime
 from kivy.properties import NumericProperty
+from kivy.properties import StringProperty
+from kivy.properties import ObjectProperty
 import web_utility
 
 
 class Converter(App):
+    home = StringProperty()
+    selected_country = StringProperty()
+    converted = NumericProperty(0)
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.today = datetime.now()
         self.currentDate = self.today.strftime('%Y/%m/%d')
-        self.home_code = ''
+
 
     def build(self):
         self.root = Builder.load_file('converter.kv')
@@ -40,12 +45,22 @@ class Converter(App):
                 details.append(split_line[0])
         return details
 
-    def home_currency_code(self):
+
+    def convert(self, amount):
+        url_string = "https://www.google.com/finance/converter?a={}&from={}&to={}".format(amount, self.get_currency_code(self.selected_country), self.get_currency_code('Australia'))
+        result = web_utility.load_page(url_string)
+        converted_amount = round(self.get_only_number(result[result.index('ld>'):result.index('</span>')]), 2)
+        self.converted = converted_amount
+
+    def get_only_number(self, given_string):
+        return float(''.join(ele for ele in given_string if ele.isdigit() or ele == '.'))
+
+    def get_currency_code(self, country):
         with open("currency_details.txt", encoding='utf8') as currency_details:
             for line in currency_details:
                 split_line = line.split(",")
-                if split_line[0] == self.root.ids.home.text:
-                    self.home_code = split_line[1]
+                if split_line[0] == country:
+                    return split_line[1]
 
 
 

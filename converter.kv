@@ -3,14 +3,20 @@ BoxLayout:
     Label:
         text: 'Current trip location: ' + app.current_location(app.currentDate)
     Spinner:
+        id: spinner
         values: app.countries()
+        on_text: app.selected_country = self.text
     TextInput:
         input_filter: 'float'
     Label:
         id: home
-        text: app.home_country()
+        text: str(app.home_country())
     TextInput:
+        input_filter: 'float'
+        text: str(app.converted)
     Label:
-        text: app.currentDate
+        text: 'Today is: ' + app.currentDate
     Label:
     Button:
+        text: 'Update currency'
+        on_press: app.convert(100)
